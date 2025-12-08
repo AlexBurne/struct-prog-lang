@@ -11,6 +11,13 @@ assert x == -123.456;
 
 print "Testing arithmetic operations...";
 
+print "Testing comment blocks";
+/*first
+test*/
+assert 1/*bananna*/+2 == 3;
+
+print /*third test*/"Finished Testing comment blocks";
+
 // addition
 assert 1+2 == 3;
 
