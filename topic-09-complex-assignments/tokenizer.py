@@ -1,6 +1,7 @@
 import re
 
 patterns = [
+    [r"/\*[\s\S]*?\*/", "comment"], # block comment  /* ... */
     [r"//[^\n]*", "comment"],  # Comment
     [r"\s+", "whitespace"],  # Whitespace
     [r"\d*\.\d+|\d+\.\d*|\d+", "number"],  # numeric literals
@@ -96,7 +97,7 @@ def tokenize(characters, generated_tags=test_generated_tags):
             token["value"] = True if value == "true" else False
 
         # append token to stream, skipping whitespace and comments
-        if tag == "whitespace":
+        if tag == ["whitespace", "comment"]:
             for c in value:
                 if c == "\n":
                     line = line + 1
@@ -263,6 +264,11 @@ def test_comments():
     assert verify_same_tokens("//alpha//comment\n", "//alpha\n")
     assert verify_same_tokens("1+5  //comment\n", "1+5  \n")
     assert verify_same_tokens('"beta"//comment\n', '"beta"\n')
+
+    assert verify_same_tokens("/* comment */", "")
+    assert verify_same_tokens("1/* comment */+2", "1+2")
+    assert verify_same_tokens("1/* multi\nline\ncomment */+2", "1+2")
+    assert verify_same_tokens("/* header */\n1+2", "\n1+2")
 
 
 def test_error():
